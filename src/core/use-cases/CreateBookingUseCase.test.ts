@@ -5,6 +5,7 @@ import {
   InMemoryBookingRepository,
   InMemoryOfferingRepository,
 } from "../testing";
+import type { Booking } from "../domain/Booking";
 import type { Offering } from "../domain/Offering";
 
 const NOW = new Date("2026-01-01T00:00:00.000Z");
@@ -116,6 +117,37 @@ describe("CreateBookingUseCase", () => {
     if (result.isFailure) {
       expect(result.error).toEqual({ type: "unknown-offering", offeringId: "unknown" });
     }
+  });
+
+  it("çakışan bir randevu varsa Result.fail döner ve yeni kaydı oluşturmaz", async () => {
+    const existingBooking: Booking = {
+      id: "existing",
+      guestName: "Mehmet",
+      guestCount: 1,
+      slotStart: hoursFromNow(48),
+      slotEnd: hoursFromNow(49),
+      selectedOfferings: [],
+      createdAt: NOW,
+    };
+    await bookingRepository.save(existingBooking);
+
+    const result = await useCase.execute(
+      {
+        guestName: "Ayşe",
+        guestCount: 1,
+        slotStart: hoursFromNow(48.5),
+        slotEnd: hoursFromNow(49.5),
+        selections: [],
+      },
+      NOW,
+    );
+
+    expect(result.isFailure).toBe(true);
+    if (result.isFailure) {
+      expect(result.error.type).toBe("slot-conflict");
+    }
+    expect(bookingRepository.all).toHaveLength(1);
+    expect(notificationService.notified).toHaveLength(0);
   });
 
   it("bildirim başarısız olsa da randevu kaydı bozulmaz", async () => {

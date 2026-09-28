@@ -21,7 +21,8 @@ export interface CreateBookingInput {
 
 export type CreateBookingError =
   | { readonly type: "unknown-offering"; readonly offeringId: string }
-  | { readonly type: "rule-violation"; readonly violations: readonly RuleViolation[] };
+  | { readonly type: "rule-violation"; readonly violations: readonly RuleViolation[] }
+  | { readonly type: "slot-conflict"; readonly message: string };
 
 export class CreateBookingUseCase {
   constructor(
@@ -64,6 +65,17 @@ export class CreateBookingUseCase {
 
     if (ruleResult.isFailure) {
       return Result.fail({ type: "rule-violation", violations: ruleResult.error });
+    }
+
+    const hasConflict = await this.bookingRepository.hasConflictingBooking(
+      input.slotStart,
+      input.slotEnd,
+    );
+    if (hasConflict) {
+      return Result.fail({
+        type: "slot-conflict",
+        message: "Seçilen zaman aralığı başka bir randevuyla çakışıyor.",
+      });
     }
 
     const booking: Booking = {

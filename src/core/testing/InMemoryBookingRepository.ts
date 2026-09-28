@@ -8,9 +8,9 @@ export class InMemoryBookingRepository implements BookingRepository {
     return this.bookings.get(id) ?? null;
   }
 
-  async findOverlapping(slotStart: Date, slotEnd: Date): Promise<readonly Booking[]> {
-    return [...this.bookings.values()].filter(
-      (booking) => booking.slotStart < slotEnd && booking.slotEnd > slotStart,
+  async hasConflictingBooking(start: Date, end: Date): Promise<boolean> {
+    return [...this.bookings.values()].some(
+      (booking) => booking.slotStart < end && booking.slotEnd > start,
     );
   }
 
