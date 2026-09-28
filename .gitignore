@@ -1,0 +1,104 @@
+# ==========================================
+# 1. BAĞIMLILIKLAR (Dependencies)
+# ==========================================
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# ==========================================
+# 2. NEXT.JS & DERLEME ÇIKTILARI (Builds)
+# ==========================================
+/.next/
+/out/
+/build
+/dist
+*.tsbuildinfo
+next-env.d.ts
+
+# ==========================================
+# 3. GÜVENLİK, ÇEVRE DEĞİŞKENLERİ & ANAHTARLAR (Secrets)
+# ==========================================
+# Tüm yerel .env dosyalarını yoksay
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
+
+# SADECE örnek şablon dosyasının repoya girmesine izin ver
+!.env.example
+
+# Sertifikalar, gizli anahtarlar ve Firebase Service Account dosyaları
+*.pem
+*.key
+*.cert
+*.crt
+*serviceAccountKey*.json
+*firebase-adminsdk*.json
+credentials.json
+
+# ==========================================
+# 4. FIREBASE EMULATOR & DEBUG
+# ==========================================
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# ==========================================
+# 5. DOCKER & COOLIFY (Local Overrides)
+# ==========================================
+docker-compose.override.yml
+*.local.dockerfile
+
+# ==========================================
+# 6. LOG & HATA KAYITLARI
+# ==========================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# 7. TEST & KAPSAM (Testing)
+# ==========================================
+/coverage
+*.lcov
+
+# ==========================================
+# 8. EDİTÖR & İŞLETİM SİSTEMİ ARTIKLARI
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# VS Code (Kişisel ayarlar, çalışma geçmişi)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.code-workspace
+
+# JetBrains (WebStorm, IntelliJ vb.)
+.idea/
+
+# ==========================================
+# 9. AI ARAÇLARI (Claude Code)
+# ==========================================
+# CLAUDE.md repoda KALMALI, ancak kişisel/yerel ayarlar yoksayılmalı
+.claude/settings.local.json
+*.local.md
