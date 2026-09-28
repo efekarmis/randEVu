@@ -85,6 +85,30 @@ describe("CreateBookingUseCase", () => {
     expect(notificationService.notified).toHaveLength(0);
   });
 
+  it("geçmiş bir tarih seçilirse Result.fail döner", async () => {
+    const result = await useCase.execute(
+      {
+        guestName: "Ayşe",
+        guestCount: 1,
+        slotStart: hoursFromNow(-1),
+        slotEnd: hoursFromNow(0),
+        selections: [],
+      },
+      NOW,
+    );
+
+    expect(result.isFailure).toBe(true);
+    if (result.isFailure) {
+      expect(result.error.type).toBe("rule-violation");
+      if (result.error.type === "rule-violation") {
+        expect(result.error.violations.some((violation) => violation.rule === "PastDateRule")).toBe(
+          true,
+        );
+      }
+    }
+    expect(bookingRepository.all).toHaveLength(0);
+  });
+
   it("kapasite aşılırsa Result.fail döner", async () => {
     const result = await useCase.execute(
       {

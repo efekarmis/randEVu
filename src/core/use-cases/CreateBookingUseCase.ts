@@ -8,7 +8,7 @@ import {
   type BookingCandidateOffering,
   type RuleViolation,
 } from "../rules";
-import { CapacityRule, LeadTimeRule } from "../rules/implementations";
+import { CapacityRule, LeadTimeRule, PastDateRule } from "../rules/implementations";
 
 export interface CreateBookingInput {
   readonly guestName: string;
@@ -60,7 +60,11 @@ export class CreateBookingUseCase {
       selectedOfferings: candidateOfferings,
     };
 
-    const ruleEngine = new RuleEngine<BookingCandidate>([new CapacityRule(), new LeadTimeRule()]);
+    const ruleEngine = new RuleEngine<BookingCandidate>([
+      new PastDateRule(),
+      new CapacityRule(),
+      new LeadTimeRule(),
+    ]);
     const ruleResult = ruleEngine.run(candidate, now);
 
     if (ruleResult.isFailure) {
